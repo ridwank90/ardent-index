@@ -43,7 +43,7 @@ def play(st,m):
   h=a+(3 if z>a else -4);c[a+(1 if z>a else -1)]=c[h];c[h]='.'
  c[z]=(m[4].upper() if t==1 else m[4].lower()) if len(m)>4 else p
  if p.lower()=='k':r=r.replace('K','').replace('Q','') if t==1 else r.replace('k','').replace('q','')
- rights={0:'q',7:'k',112:'Q',119:'K'}
+ rights={0:'Q',7:'K',112:'q',119:'k'}
  if p.lower()=='r' and a in rights:r=r.replace(rights[a],'')
  if cap.lower()=='r' and z in rights:r=r.replace(rights[z],'')
  e=a+8*t if p.lower()=='p' and abs(z-a)==32 else -1
