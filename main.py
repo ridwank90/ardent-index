@@ -46,8 +46,7 @@ def play(st,m):
  rights={0:'Q',7:'K',112:'q',119:'k'}
  if p.lower()=='r' and a in rights:r=r.replace(rights[a],'')
  if cap.lower()=='r' and z in rights:r=r.replace(rights[z],'')
- e=a+8*t if p.lower()=='p' and abs(z-a)==32 else -1
- return c,-t,r,e
+ return c,-t,r,a+8*t if p.lower()=='p' and abs(z-a)==32 else -1
 def gen(st):
  b,t,r,e=st;out=[]
  for a,p in enumerate(b):
@@ -72,7 +71,12 @@ def gen(st):
      z+=d
    if k=='k':
     row=0 if t==1 else 112;rights='KQ' if t==1 else 'kq'
-    if flag in r and b[rook]==('R' if t==1 else 'r') and all(b[x]=='.' for x in empty) and not attacked(c,through,-t) and not attacked(c,dest,-t):out.append(name(a)+name(dest))
+    if a==row+4 and not attacked(b,a,-t):
+     for side,flag,empty,through in ((1,rights[0],(row+5,row+6),row+5),(-1,rights[1],(row+1,row+2,row+3),row+3)):
+      rook=row+(7 if side==1 else 0);dest=row+(6 if side==1 else 2);c=b.copy();c[a]='.';c[through]=p
+      if flag in r and b[rook]==('R' if t==1 else 'r') and all(b[x]=='.' for x in empty) and not attacked(c,through,-t):out.append(name(a)+name(dest))
+ legal=[]
+ for m in out:
   c,u,rr,ee=play(st,m);king=next(i for i,p in enumerate(c) if p==('K' if t==1 else 'k'))
   if not attacked(c,king,-t):legal.append(m)
  return legal
