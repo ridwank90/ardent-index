@@ -57,7 +57,7 @@ def G(st):
     z+=d
     if a>>4==(1 if t==1 else 6) and b[z]=='.':o.append(nm(a)+nm(z))
    for z in (a+d-1,a+d+1):
-    if not z&0x88 and ((b[z]!='.' and b[z].isupper()!=(t==1) and b[z].lower()!='k') or z==e and b[z]=='.' and b[z-16*t].lower()=='p'):o += [nm(a)+nm(z)+v for v in 'qrbn'] if z>>4 in (0,7) else [nm(a)+nm(z)]
+    if not z&0x88 and ((b[z]!='.' and b[z].isupper()!=(t==1) and b[z].lower()!='k') or z==e and b[z]=='.' and b[z-16*t]==('p' if t==1 else 'P')):o += [nm(a)+nm(z)+v for v in 'qrbn'] if z>>4 in (0,7) else [nm(a)+nm(z)]
   else:
    ds=N if k=='n' else B if k=='b' else R if k=='r' else D
    for d in ds:
@@ -75,17 +75,15 @@ def G(st):
       if flag in r and b[rook]==('R' if t==1 else 'r') and all(b[x]=='.' for x in empty) and not A(c,through,-t):o.append(nm(a)+nm(dest))
  l=[]
  for m in o:
-  c,u,rr,ee=M(st,m);k=next(i for i,p in enumerate(c) if p==('K' if t==1 else 'k'))
+  c,_,_,_=M(st,m);k=next(i for i,p in enumerate(c) if p==('K' if t==1 else 'k'))
   if not A(c,k,-t):l.append(m)
  return l
 def ev(st):
  b,t,r,e=st
  return sum((V[p.lower()] if p.isupper() else -V[p.lower()]) for p in b if p!='.')*t
 def O(st,ms):
- b,t,r,e=st
- def key(m):
-  return V.get(b[sq(m[2:4])].lower(),0)
- return sorted(ms,key=key,reverse=True)
+ b=st[0]
+ return sorted(ms,key=lambda m:V.get(b[sq(m[2:4])].lower(),0),reverse=True)
 n=0
 def S(st,d,lo,hi):
  global n
@@ -102,6 +100,7 @@ def S(st,d,lo,hi):
   if lo>=hi:break
  return lo
 def C(f,ms):
+ if not ms:raise ValueError('no legal moves')
  st=P(f);best=ms[0];lo=-32000
  global n
  n=0
