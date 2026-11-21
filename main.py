@@ -1,8 +1,7 @@
 import json,os,sys,urllib.request,urllib.error
 U=os.environ.get('MAKEFUN_ENV_URL')
 if not U:sys.exit('MAKEFUN_ENV_URL is not set')
-V={'p':100,'n':320,'b':330,'r':500,'q':900,'k':0}
-B=(15,17,-15,-17);R=(1,-1,16,-16);N=(14,18,31,33,-14,-18,-31,-33);D=B+R
+V={'p':100,'n':320,'b':330,'r':500,'q':900,'k':0};B=(15,17,-15,-17);R=(1,-1,16,-16);N=(14,18,31,33,-14,-18,-31,-33);D=B+R
 class Stop(Exception):pass
 def post(p,d):
  r=urllib.request.Request(U+p,data=json.dumps(d).encode(),headers={'content-type':'application/json'})
@@ -43,10 +42,11 @@ def play(st,m):
  if p.lower()=='k' and abs(z-a)==2:
   h=a+(3 if z>a else -4);c[a+(1 if z>a else -1)]=c[h];c[h]='.'
  c[z]=(m[4].upper() if t==1 else m[4].lower()) if len(m)>4 else p
- if p=='K':r=r.replace('K','').replace('Q','')
- if p=='k':r=r.replace('k','').replace('q','')
- for x,ch in ((a,'Q' if t==1 else 'q'),(a,'K' if t==1 else 'k'),(z,'Q' if cap=='R' else 'q'),(z,'K' if cap=='R' else 'k')):
-  if x in (0,7,112,119) and (x!=a or p.lower()=='r') and (x!=z or cap.lower()=='r'):r=r.replace(ch,'')
+ if p.lower()=='k':
+  for x in ('KQ' if t==1 else 'kq'):r=r.replace(x,'')
+ rights={0:'q',7:'k',112:'Q',119:'K'}
+ if p.lower()=='r' and a in rights:r=r.replace(rights[a],'')
+ if cap.lower()=='r' and z in rights:r=r.replace(rights[z],'')
  e=a+8*t if p.lower()=='p' and abs(z-a)==32 else -1
  return c,-t,r,e
 def gen(st):
@@ -76,8 +76,7 @@ def gen(st):
     row=0 if t==1 else 112;rights='KQ' if t==1 else 'kq'
     if a==row+4 and not attacked(b,a,-t):
      for side,flag,empty,through in ((1,rights[0],(row+5,row+6),row+5),(-1,rights[1],(row+1,row+2,row+3),row+3)):
-      rook=row+(7 if side==1 else 0);dest=row+(6 if side==1 else 2)
-      c=b.copy();c[a]='.';c[through]=p
+      rook=row+(7 if side==1 else 0);dest=row+(6 if side==1 else 2);c=b.copy();c[a]='.';c[through]=p
       if flag in r and b[rook]==('R' if t==1 else 'r') and all(b[x]=='.' for x in empty) and not attacked(c,through,-t):out.append(name(a)+name(dest))
  legal=[]
  for m in out:
@@ -88,8 +87,8 @@ def evaluate(st):
  b,t,r,e=st;s=0
  for i,p in enumerate(b):
   if p=='.':continue
-  x=i&7;y=i>>4;k=p.lower();center=7-abs(3.5-x)-abs(3.5-y)
-  v=V[k]+(9*(y if p.isupper() else 7-y)+2*center if k=='p' else 8*center if k in 'nb' else 2*center if k=='r' else center if k=='q' else 0)
+  x=i&7;y=i>>4;k=p.lower();c=7-abs(3.5-x)-abs(3.5-y)
+  v=V[k]+(9*(y if p.isupper() else 7-y)+2*c if k=='p' else 8*c if k in 'nb' else 2*c if k=='r' else c if k=='q' else 0)
   s+=v if p.isupper() else -v
  return s*t
 def ordered(st,ms):
