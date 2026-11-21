@@ -42,8 +42,7 @@ def play(st,m):
  if p.lower()=='k' and abs(z-a)==2:
   h=a+(3 if z>a else -4);c[a+(1 if z>a else -1)]=c[h];c[h]='.'
  c[z]=(m[4].upper() if t==1 else m[4].lower()) if len(m)>4 else p
- if p.lower()=='k':
-  for x in ('KQ' if t==1 else 'kq'):r=r.replace(x,'')
+ if p.lower()=='k':r=r.replace('K','').replace('Q','') if t==1 else r.replace('k','').replace('q','')
  rights={0:'q',7:'k',112:'Q',119:'K'}
  if p.lower()=='r' and a in rights:r=r.replace(rights[a],'')
  if cap.lower()=='r' and z in rights:r=r.replace(rights[z],'')
@@ -61,8 +60,7 @@ def gen(st):
     z+=d
     if a>>4==(1 if t==1 else 6) and b[z]=='.':out.append(name(a)+name(z))
    for z in (a+d-1,a+d+1):
-    if not z&0x88 and ((b[z]!='.' and b[z].isupper()!=(t==1) and b[z].lower()!='k') or z==e):
-     out += [name(a)+name(z)+v for v in 'qrbn'] if z>>4 in (0,7) else [name(a)+name(z)]
+    if not z&0x88 and ((b[z]!='.' and b[z].isupper()!=(t==1) and b[z].lower()!='k') or z==e):out += [name(a)+name(z)+v for v in 'qrbn'] if z>>4 in (0,7) else [name(a)+name(z)]
   else:
    ds=N if k=='n' else B if k=='b' else R if k=='r' else D
    for d in ds:
@@ -88,8 +86,7 @@ def evaluate(st):
  for i,p in enumerate(b):
   if p=='.':continue
   x=i&7;y=i>>4;k=p.lower();c=7-abs(3.5-x)-abs(3.5-y)
-  v=V[k]+(9*(y if p.isupper() else 7-y)+2*c if k=='p' else 8*c if k in 'nb' else 2*c if k=='r' else c if k=='q' else 0)
-  s+=v if p.isupper() else -v
+  v=V[k]+(9*(y if p.isupper() else 7-y)+2*c if k=='p' else 8*c if k in 'nb' else 2*c if k=='r' else c if k=='q' else 0);s+=v if p.isupper() else -v
  return s*t
 def ordered(st,ms):
  b,t,r,e=st
