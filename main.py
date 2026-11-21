@@ -69,48 +69,4 @@ def G(st):
      z+=d
    if k=='k':
     row=0 if t==1 else 112;rights='KQ' if t==1 else 'kq'
-    if a==row+4 and not A(b,a,-t):
-     for side,flag,empty,through in ((1,rights[0],(row+5,row+6),row+5),(-1,rights[1],(row+1,row+2,row+3),row+3)):
-      rook=row+(7 if side==1 else 0);dest=row+(6 if side==1 else 2);c=b.copy();c[a]='.';c[through]=p
-      if flag in r and b[rook]==('R' if t==1 else 'r') and all(b[x]=='.' for x in empty) and not A(c,through,-t):o.append(nm(a)+nm(dest))
- l=[]
- for m in o:
-  c,_,_,_=M(st,m);k=next(i for i,p in enumerate(c) if p==('K' if t==1 else 'k'))
-  if not A(c,k,-t):l.append(m)
- return l
-def ev(st):
- b,t,r,e=st
- return sum((V[p.lower()] if p.isupper() else -V[p.lower()]) for p in b if p!='.')*t
-def O(st,ms):
- b=st[0]
- return sorted(ms,key=lambda m:V.get(b[sq(m[2:4])].lower(),0),reverse=True)
-n=0
-def S(st,d,lo,hi):
- global n
- n+=1
- if n>1100:raise X
- if not d:return ev(st)
- ms=O(st,G(st))
- if not ms:
-  b,t,r,e=st;k=next(i for i,p in enumerate(b) if p==('K' if t==1 else 'k'))
-  return -30000 if A(b,k,-t) else 0
- for m in ms:
-  v=-S(M(st,m),d-1,-hi,-lo)
-  if v>lo:lo=v
-  if lo>=hi:break
- return lo
-def C(f,ms):
- if not ms:raise ValueError('no legal moves')
- st=P(f);best=ms[0];lo=-32000
- global n
- n=0
- for m in O(st,ms):
-  try:v=-S(M(st,m),2,-32000,-lo)
-  except X:break
-  if v>lo:lo=v;best=m
- return best
-while 1:
- g=H('/game',{})
- if g['status']=='done':break
- while g['status']=='your_move':
-  g=H('/move',{'game':g['game'],'move':C(g['fen'],g['legal_moves'])})
+    if a==row+4
